@@ -8,6 +8,7 @@
 사용자는 MyRemap 메쏘드에 캘리브레이션하고자 하는 이미지를 파라미터로 전달할 수 있습니다.  
 
 '''c
+
 class SeulCaliMatrix{
     public:
         
@@ -40,4 +41,6 @@ class SeulCaliMatrix{
         }
          
 };
-'''
+
+
+'''  
