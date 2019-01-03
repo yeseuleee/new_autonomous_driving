@@ -1,13 +1,13 @@
 # new_autonomous_driving
 
-#<seule_calibration>
-#카메라 캘리브레이션 수행하는 클래스입니다.
-#캘리브레이션 정보가 적힌 yaml 파일을 읽어 필요한 파라미터를 추출해 가져옵니다.
-#(카메라 이미지의 너비,높이,camera_matrix,distortion_coefficients)
-#이 정보들을 이용해 본 클래스의 메써드는 initUndistortRectifyMap()을 수행해 remap에 필요한 참조행렬을 생성합니다.
-#사용자는 MyRemap 메쏘드에 캘리브레이션하고자 하는 이미지를 파라미터로 전달할 수 있습니다.
+#<seule_calibration>  
+#카메라 캘리브레이션 수행하는 클래스입니다.  
+#캘리브레이션 정보가 적힌 yaml 파일을 읽어 필요한 파라미터를 추출해 가져옵니다.  
+#(카메라 이미지의 너비,높이,camera_matrix,distortion_coefficients)  
+#이 정보들을 이용해 본 클래스의 메써드는 initUndistortRectifyMap()을 수행해 remap에 필요한 참조행렬을 생성합니다.  
+#사용자는 MyRemap 메쏘드에 캘리브레이션하고자 하는 이미지를 파라미터로 전달할 수 있습니다.  
 
-'''c++
+'''c++  
 class SeulCaliMatrix{
     public:
         
