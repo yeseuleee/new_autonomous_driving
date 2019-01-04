@@ -4,7 +4,7 @@
 #include <iostream>
 
 int main(){
-    std::string path = ros::package::getPath("PreProcess")+"/src/camera_main.yaml";
+    std::string path = ros::package::getPath("img_preprocessing")+"/src/camera_main.yaml";
     SeulCaliMatrix cali_img(path);
 
     cv::VideoCapture cap;
