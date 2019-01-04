@@ -107,7 +107,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES PreProcess
+  LIBRARIES pre_process
   CATKIN_DEPENDS cv_bridge image_transport message_runtime roscpp std_msgs
   DEPENDS system_lib
 )
@@ -119,7 +119,7 @@ find_package(OpenCV)
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
+  include
   ${catkin_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
 )
@@ -137,7 +137,7 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
- add_executable(${PROJECT_NAME}_seul_calibration_node src/seul_calibration.cpp)
+ add_executable(${PROJECT_NAME}_seul_calibration_node src/seul_calibration.cpp src/main.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
