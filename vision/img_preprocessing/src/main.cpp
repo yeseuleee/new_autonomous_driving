@@ -1,4 +1,4 @@
-#include <pre_process/seul_calibration/seul_calibration.h>
+#include <img_preprocessing/seul_calibration/seul_calibration.h>
 #include <ros/ros.h>
 #include <ros/package.h>
 #include <iostream>
