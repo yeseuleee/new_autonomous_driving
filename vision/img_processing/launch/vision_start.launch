@@ -5,7 +5,7 @@
 	<arg name="left_camera_num" default="1"/>
 	<arg name="right_camera_name" default="right"/>
 	<arg name="right_camera_num" default="2"/>
-
+	
 	<group ns="$(arg main_camera_name)">
 		<node name="img_processing_node" pkg="img_processing" type="img_processing_node" args="$(arg main_camera_name)" output="screen" respawn="true">
 			<param name="debug" value="0"/>

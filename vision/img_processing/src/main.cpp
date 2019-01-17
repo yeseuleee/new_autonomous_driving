@@ -6,7 +6,7 @@
 #include <ros/package.h>
 #include <iostream>
 
-
+#include <sstream>
 
 
 #include <cv_bridge/cv_bridge.h>
@@ -14,7 +14,7 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 
-class SeulImgMsg{//카메라 번호를 넣으면 ..? 이미지 객체로 바뀌어야 함..?
+//카메라 번호를 넣으면 ..? 이미지 객체로 바뀌어야 함..?
 //1. 그룹노드를 정해서 각각 이 클래스를 적용시키면 각각 이미지 객체를 반환한다. 이작업을 이미지가 필요한
 //교통표지 인식 모듈에서 직접 그룹별로 이미지 객체를 바로 변환해 사용하도록 한다. 
 //이경우 이 클래스에서 카메라랑 연결해서 이미지 받아오고, opencv객체에 저장해서 그걸 다시 ros이미지 객체에 저장해줌
@@ -42,44 +42,59 @@ class SeulImgMsg{//카메라 번호를 넣으면 ..? 이미지 객체로 바뀌�
 //- 전처리(캘리브레이션, ros img obj화-> 메인에 넘길떄만..쓰면 되지 않을까)
 //- 교통표지 인식 모듈 (캘리브레이션 된 이미지만 받아옴)
 //- 
-    public:
-        SeulImgMsg(){
-            //it을 초기화해서
-            //cvimg로 이미지 객체 변환.
-        }
-        void CaptureImg(){
-            //videocapture 변수를 이용해서 frame객체를 저장.
-            //영상을 불러올 카메라 넘버를 인자로 필요로하고,
-            //영상을 연속적으로 저장한걸 mat으로 저장.(연속성의 구현은 이함수 바깥..)
-            //
-        }
+    // public:
+    //     SeulImgMsg(){
+    //         //it을 초기화해서
+    //         //cvimg로 이미지 객체 변환.
+    //     }
+    //     void CaptureImg(){
+    //         //videocapture 변수를 이용해서 frame객체를 저장.
+    //         //영상을 불러올 카메라 넘버를 인자로 필요로하고,
+    //         //영상을 연속적으로 저장한걸 mat으로 저장.(연속성의 구현은 이함수 바깥..)
+    //         //
+    //     }
 
-    private:
-};
+    // private:
+
+void seulInitMainParam(ros::NodeHandle& nh){
+   
+}
 int main(int argc, char** argv){
-    std::string cali_yaml_path = ros::package::getPath("img_processing")+"/src/camera_main.yaml";
-    SeulCaliMatrix cali_img(cali_yaml_path);
-
+    
+    //img_processing_node initialization
     ros::init(argc, argv, "img_processing_node");
     ros::NodeHandle nh;
 
+    //image calibration
+    std::string cali_yaml_path = ros::package::getPath("img_processing")+"/src/camera_main.yaml";
+    SeulCaliMatrix cali_img(cali_yaml_path);
+
+    const std::string& group_name = argv[1];
+    int cam_num;
+    std::istringstream(argv[2]) >> cam_num;
+    
+    std::cout<<"cam_num : "<<cam_num<<std::endl;    
+    std::cout<<"cam_num : "<<group_name<<std::endl;
     cv::VideoCapture cap;
     cv::Mat frame;
-    int cam_num = 0;
-    cap.open(cam_num);
-    if(cap.isOpened()){
+    cam_num-=1;
+    if(cap.open(cam_num)){
         ros::Rate loop_rate(30);
         while(nh.ok()){
             cap >> frame;
             //------------------------------------------
             cali_img.MyReMap(frame);
-            SeulLaneDetection test_lane(frame);
+            SeulLaneDetection test_lane(frame, nh,group_name);
             cv::imshow("rel img",frame);
             int ckey = cv::waitKey(1);
             if(ckey == 27)break;
             loop_rate.sleep();
         }
     }
+    else{
+        // CV_ERROR("current camera number("+cam_num+") is not correct",cap.open());
+    }
+    
     
     return 0;
 }
