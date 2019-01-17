@@ -1,4 +1,4 @@
-#include <img_preprocessing/seul_calibration/seul_calibration.h>
+#include <img_processing/seul_calibration/seul_calibration.h>
 
 SeulCaliMatrix::SeulCaliMatrix(std::string my_file_path)
 : file_path(my_file_path){
