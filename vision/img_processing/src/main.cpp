@@ -5,7 +5,7 @@
 #include <ros/ros.h>
 #include <ros/package.h>
 #include <iostream>
-
+#include <vector>
 #include <sstream>
 
 
@@ -14,6 +14,10 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 
+
+std::vector<int> w_lane_arr;
+std::vector<int> y_lane_arr;
+std::string group_name;
 //카메라 번호를 넣으면 ..? 이미지 객체로 바뀌어야 함..?
 //1. 그룹노드를 정해서 각각 이 클래스를 적용시키면 각각 이미지 객체를 반환한다. 이작업을 이미지가 필요한
 //교통표지 인식 모듈에서 직접 그룹별로 이미지 객체를 바로 변환해 사용하도록 한다. 
@@ -56,43 +60,53 @@
 
     // private:
 
-void seulInitMainParam(ros::NodeHandle& nh){
+void seulInitParam(ros::NodeHandle& nh, const std::string& group_name){
+    std::cout<<"group name : "<<group_name<<std::endl;
+    y_lane_arr.resize(6);
+    nh.param<int>("/" + group_name + "/img_processing_node/y_hmin", y_lane_arr[0], 44);
+    nh.param<int>("/" + group_name + "/img_processing_node/y_hmax", y_lane_arr[1], 21);
+    nh.param<int>("/" + group_name + "/img_processing_node/y_smin", y_lane_arr[2], 52);
+    nh.param<int>("/" + group_name + "/img_processing_node/y_smax", y_lane_arr[3], 151);
+    nh.param<int>("/" + group_name + "/img_processing_node/y_vmin", y_lane_arr[4], 0);
+    nh.param<int>("/" + group_name + "/img_processing_node/y_vmax", y_lane_arr[5], 180);
    
+    // //default white when no launch file for lane color
+    w_lane_arr.resize(6);
+    nh.param<int>("/" + group_name + "/img_processing_node/w_hmin", w_lane_arr[0], 0);
+    nh.param<int>("/" + group_name + "/img_processing_node/w_hmax", w_lane_arr[1], 180);
+    nh.param<int>("/" + group_name + "/img_processing_node/w_smin", w_lane_arr[2], 0);
+    nh.param<int>("/" + group_name + "/img_processing_node/w_smax", w_lane_arr[3], 24);
+    nh.param<int>("/" + group_name + "/img_processing_node/w_vmin", w_lane_arr[4], 172);
+    nh.param<int>("/" + group_name + "/img_processing_node/w_vmax", w_lane_arr[5], 255);
 }
+
 int main(int argc, char** argv){
-    
     //img_processing_node initialization
     ros::init(argc, argv, "img_processing_node");
     ros::NodeHandle nh;
-
+    
     //image calibration
     std::string cali_yaml_path = ros::package::getPath("img_processing")+"/src/camera_main.yaml";
     SeulCaliMatrix cali_img(cali_yaml_path);
-
-    const std::string& group_name = argv[1];
     int cam_num;
     std::istringstream(argv[2]) >> cam_num;
-    
-    std::cout<<"cam_num : "<<cam_num<<std::endl;    
-    std::cout<<"cam_num : "<<group_name<<std::endl;
+    seulInitParam(nh,argv[1]);
+
     cv::VideoCapture cap;
     cv::Mat frame;
-    cam_num-=1;
     if(cap.open(cam_num)){
         ros::Rate loop_rate(30);
         while(nh.ok()){
             cap >> frame;
-            //------------------------------------------
             cali_img.MyReMap(frame);
-            SeulLaneDetection test_lane(frame, nh,group_name);
-            cv::imshow("rel img",frame);
+            SeulLaneDetection test_lane(frame,nh,argv[1],y_lane_arr,w_lane_arr);
             int ckey = cv::waitKey(1);
             if(ckey == 27)break;
             loop_rate.sleep();
         }
     }
     else{
-        // CV_ERROR("current camera number("+cam_num+") is not correct",cap.open());
+        printf("Error in %s(%d) camera\n",argv[1],cam_num);
     }
     
     

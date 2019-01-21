@@ -7,7 +7,7 @@
 	<arg name="right_camera_num" default="2"/>
 	
 	<group ns="$(arg main_camera_name)">
-		<node name="img_processing_node" pkg="img_processing" type="img_processing_node" args="$(arg main_camera_name)" output="screen" respawn="true">
+		<node name="img_processing_node" pkg="img_processing" type="img_processing_node" args="$(arg main_camera_name) $(arg main_camera_num)" output="screen" respawn="false">
 			<param name="debug" value="0"/>
 			<param name="web_cam" value="1"/>
 			<param name="track_bar" value="1"/>
@@ -15,7 +15,74 @@
 			<param name="auto_shot" value="0"/>
 			<param name="auto_record" value="0"/>
 
-			<param name="y_hmin" value="18"/>
+			<param name="y_hmin" value="0"/>
+			<param name="y_hmax" value="48"/>
+			<param name="y_smin" value="62"/>
+			<param name="y_smax" value="255"/>
+			<param name="y_vmin" value="158"/>
+			<param name="y_vmax" value="206"/>
+	
+			
+			
+			<param name="w_hmin" value="6"/>
+			<param name="w_hmax" value="179"/>
+			<param name="w_smin" value="0"/>
+			<param name="w_smax" value="30"/>
+			<param name="w_vmin" value="180"/>
+			<param name="w_vmax" value="255"/>
+
+			<param name="r_hmin" value="133"/>
+			<param name="r_hmax" value="179"/>
+			<param name="r_smin" value="15"/>
+			<param name="r_smax" value="255"/>
+			<param name="r_vmin" value="65"/>
+			<param name="r_vmax" value="255"/>
+
+
+
+			<param name="r2_hmin" value="110"/>
+			<param name="r2_hmax" value="179"/>
+			<param name="r2_smin" value="89"/>
+			<param name="r2_smax" value="255"/>
+			<param name="r2_vmin" value="86"/>
+			<param name="r2_vmax" value="255"/>
+
+			<param name="g_hmin" value="38"/>
+			<param name="g_hmax" value="87"/>
+			<param name="g_smin" value="77"/>
+			<param name="g_smax" value="255"/>
+			<param name="g_vmin" value="22"/>
+			<param name="g_vmax" value="255"/>
+
+
+			<param name="y2_hmin" value="23"/>
+			<param name="y2_hmax" value="75"/>
+			<param name="y2_smin" value="37"/>
+			<param name="y2_smax" value="255"/>
+			<param name="y2_vmin" value="91"/>
+			<param name="y2_vmax" value="208"/>
+			
+
+			<param name="b_hmin" value="80"/>
+			<param name="b_hmax" value="115"/>
+			<param name="b_smin" value="199"/>
+			<param name="b_smax" value="255"/>
+			<param name="b_vmin" value="21"/>
+			<param name="b_vmax" value="198"/>
+
+		</node>
+	</group>
+
+	<group ns="$(arg left_camera_name)">
+		<node name="img_processing_node" pkg="img_processing" type="img_processing_node" args="$(arg left_camera_name) $(arg left_camera_num)" output="screen" respawn="false">
+			<param name="debug" value="0"/>
+			<param name="web_cam" value="1"/>
+			<param name="track_bar" value="1"/>
+			<param name="gazebo" value="0"/>
+			<param name="auto_shot" value="0"/>
+			<param name="auto_record" value="0"/>
+
+			<param name="y_hmin" value="0"/>
 			<param name="y_hmax" value="48"/>
 			<param name="y_smin" value="62"/>
 			<param name="y_smax" value="255"/>
