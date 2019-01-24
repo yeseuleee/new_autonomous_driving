@@ -4,17 +4,19 @@
 
 
 
-SeulLaneDetection::SeulLaneDetection(cv::Mat &src_, const ros::NodeHandle &nh_, const std::string &group_name_, std::vector<int>& y_lane_arr_, std::vector<int>& w_lane_arr_)
-    : src(src_), nh(nh_), group_name(group_name_),y_lane_arr(y_lane_arr_),w_lane_arr(w_lane_arr_),    
+SeulLaneDetection::SeulLaneDetection(cv::Mat &src_, const std::string &group_name_, std::vector<int>& y_lane_arr_, std::vector<int>& w_lane_arr_)
+    : src(src_), group_name(group_name_),y_lane_arr(y_lane_arr_),w_lane_arr(w_lane_arr_),    
       trackbar_name_y(group_name + "_yellow_lane_trackbar"), trackbar_name_w(group_name + "_white_lane_trackbar")
 {
     if (!src.empty())
     {
-        seulResize(2, "/");
+        seulResize(320,240);
         seulMakeHSVTrackbar();
         seulSetHSVTrackbar();
         seulDetectHSVColor();
         seulShowTrackbar();
+        seulHoughLinseP();
+        seulColoring();
     }
     else
     {
@@ -22,18 +24,9 @@ SeulLaneDetection::SeulLaneDetection(cv::Mat &src_, const ros::NodeHandle &nh_, 
     }
 }
 
-void SeulLaneDetection::seulResize(int num, std::string optr)
+void SeulLaneDetection::seulResize(int cols_, int rows_)
 {
-    // printf("before resize : %d %d\n",src.cols, src.rows);
-    if (optr == "*")
-    { //twice img
-        cv::resize(src, src, cv::Size(src.cols * num, src.rows * num), 0, 0, CV_INTER_AREA);
-    }
-    else if (optr == "/")
-    { //devide img
-        cv::resize(src, src, cv::Size(src.cols / num, src.rows / num), 0, 0, CV_INTER_AREA);
-    }
-    // printf("after resize : %d %d\n",src.cols, src.rows);
+    cv::resize(src, src, cv::Size(cols_, rows_), 0, 0, CV_INTER_AREA);
 }
 
 void SeulLaneDetection::seulMakeHSVTrackbar()
@@ -113,4 +106,43 @@ void SeulLaneDetection::seulShowTrackbar()
     //for trackbar visualizing
     cv::imshow(trackbar_name_w, dst_w);
     cv::imshow(trackbar_name_y, dst_y);
+}
+
+void SeulLaneDetection::seulHoughLinseP(){
+    float ladian;
+    int degree;
+    cv::Mat hough_result = src.clone();
+    cv::Mat hough_yellow_img = dst_y.clone();
+    cv::Mat hough_white_img = dst_w.clone();
+    std::vector<cv::Vec4i> yellow_lines, white_lines;
+    std::vector<cv::Vec4i>::iterator yellow_it, white_it;
+    cv::HoughLinesP(hough_yellow_img,yellow_lines,1,CV_PI/180.0,80,100);
+    if(!yellow_lines.empty()){
+        yellow_it = yellow_lines.end() - 1;
+        ladian = atan2f((*yellow_it)[3]-(*yellow_it)[1], (*yellow_it)[2]-(*yellow_it)[0]);
+        degree = ladian * 180/CV_PI;
+        if(abs(degree)>=20 && abs(degree)<=80){
+            cv::line(hough_result,
+                    cv::Point((*yellow_it)[0], (*yellow_it)[1]), 
+                    cv::Point((*yellow_it)[2],(*yellow_it)[3]),
+                    cv::Scalar(255,200,20),3,0);
+        }
+        
+        cv::imshow("left", hough_result);
+    }
+}
+
+void SeulLaneDetection::seulColoring(){
+    cv::Mat color_img = src.clone();
+    cv::Mat lane_img = dst_w | dst_y;
+    for(int y = color_img.rows-1; y >= 0; y--){
+        uchar *lane_data = lane_img.ptr<uchar>(y);
+        uchar *color_data = color_img.ptr<uchar>(y);
+        for(int x = 0; x < color_img.cols; x++){
+            if(lane_data[x] != (uchar)0){
+                color_data[x*color_img.channels()+1] = 25;
+            }
+        }
+    }
+    cv::imshow(group_name + "_coloring", color_img);
 }

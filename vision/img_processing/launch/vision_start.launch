@@ -9,12 +9,14 @@
 	<group ns="$(arg main_camera_name)">
 		<node name="img_processing_node" pkg="img_processing" type="img_processing_node" args="$(arg main_camera_name) $(arg main_camera_num)" output="screen" respawn="false">
 			<param name="debug" value="0"/>
-			<param name="web_cam" value="1"/>
+			<param name="web_cam" value="0"/>
 			<param name="track_bar" value="1"/>
 			<param name="gazebo" value="0"/>
 			<param name="auto_shot" value="0"/>
 			<param name="auto_record" value="0"/>
-
+			<param name="loop_rate_" value="30.0"/>
+			<param name="video_path" type="str" value="$(find img_processing)/src/0514_right.avi"/>
+			<param name="calibration_path" type="str" value="$(find img_processing)/src/camera_main.yaml"/>
 			<param name="y_hmin" value="0"/>
 			<param name="y_hmax" value="48"/>
 			<param name="y_smin" value="62"/>
@@ -22,8 +24,6 @@
 			<param name="y_vmin" value="158"/>
 			<param name="y_vmax" value="206"/>
 	
-			
-			
 			<param name="w_hmin" value="6"/>
 			<param name="w_hmax" value="179"/>
 			<param name="w_smin" value="0"/>
@@ -31,13 +31,13 @@
 			<param name="w_vmin" value="180"/>
 			<param name="w_vmax" value="255"/>
 
+
 			<param name="r_hmin" value="133"/>
 			<param name="r_hmax" value="179"/>
 			<param name="r_smin" value="15"/>
 			<param name="r_smax" value="255"/>
 			<param name="r_vmin" value="65"/>
 			<param name="r_vmax" value="255"/>
-
 
 
 			<param name="r2_hmin" value="110"/>
@@ -53,7 +53,6 @@
 			<param name="g_smax" value="255"/>
 			<param name="g_vmin" value="22"/>
 			<param name="g_vmax" value="255"/>
-
 
 			<param name="y2_hmin" value="23"/>
 			<param name="y2_hmax" value="75"/>
@@ -74,14 +73,16 @@
 	</group>
 
 	<group ns="$(arg left_camera_name)">
-		<node name="img_processing_node" pkg="img_processing" type="img_processing_node" args="$(arg left_camera_name) $(arg left_camera_num)" output="screen" respawn="false">
+		<node name="img_processing_node" pkg="img_processing" type="img_processing_node" args="$(arg left_camera_name) $(arg left_camera_num)" output="screen" respawn="true">
 			<param name="debug" value="0"/>
-			<param name="web_cam" value="1"/>
+			<param name="web_cam" value="0"/>
 			<param name="track_bar" value="1"/>
 			<param name="gazebo" value="0"/>
 			<param name="auto_shot" value="0"/>
 			<param name="auto_record" value="0"/>
-
+			<param name="loop_rate_" value="30.0"/>
+			<param name="video_path" type="str" value="$(find img_processing)/src/0514_left.avi"/>
+			<param name="calibration_path" type="str" value="$(find img_processing)/src/camera_main.yaml"/>
 			<param name="y_hmin" value="0"/>
 			<param name="y_hmax" value="48"/>
 			<param name="y_smin" value="62"/>

@@ -27,18 +27,18 @@ class SeulLaneDetection
 {
 
 public: 
-    SeulLaneDetection(cv::Mat& src_, const ros::NodeHandle& nh_, const std::string& group_name_, std::vector<int>& y_lane_arr_, std::vector<int>& w_lane_arr_);
-    void seulResize(int num, std::string optr);
+    SeulLaneDetection(cv::Mat& src_, const std::string& group_name_, std::vector<int>& y_lane_arr_, std::vector<int>& w_lane_arr_);
+    void seulResize(int cols_, int rows_);
     void seulMakeHSVTrackbar();
     void seulSetHSVTrackbar();
     void seulDetectHSVColor();
     void seulShowTrackbar();
-
+    void seulHoughLinseP();
+    void seulColoring();
 private:
     cv::Mat& src;
     cv::Mat dst_y, dst_w;
     std::vector<int> &y_lane_arr, &w_lane_arr;
-    const ros::NodeHandle& nh;
     const std::string& group_name;
     const std::string &trackbar_name_y, &trackbar_name_w;
 };
